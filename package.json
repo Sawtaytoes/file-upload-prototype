@@ -3,36 +3,19 @@
   "private": true,
   "scripts": {
     "debug": "nodemon --inspect .",
-    "start": "yarn && nodemon .",
-    "test": "ava",
-    "test:watch": "ava --watch"
+    "start": "node .",
+    "watch": "nodemon ."
   },
   "engines": {
-    "node": "^10.7.0",
-    "yarn": "^1.6.0"
-  },
-  "ava": {
-    "babel": {
-      "testOptions": {
-        "babelrc": false
-      }
-    },
-    "concurrency": 5,
-    "files": [
-      "redux/**/*.test.js",
-      "utils/**/*.test.js"
-    ],
-    "sources": [
-      "**/*.js"
-    ]
+    "node": "^10.7.0"
   },
   "dependencies": {
     "@ghadyani-framework/eslint-config-base": "^0.0.3",
     "@ghadyani-framework/eslint-config-node": "^0.0.3",
     "body-parser": "^1.18.3",
-    "connect-multiparty": "^2.1.1",
     "eslint": "^5.4.0",
     "express": "^4.16.3",
-    "fnv32": "^0.0.1"
+    "fnv32": "^0.0.1",
+    "multiparty": "^4.2.1"
   }
 }
