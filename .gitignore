@@ -5,6 +5,8 @@ localConfig.js
 .cache
 .eslintcache
 public/bundles
+uploads/*
+!uploads/.gitkeep
 
 # Logs
 logs
