@@ -2,13 +2,19 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const fnv32 = require('fnv32')
 const fs = require('fs')
-const multipart = require('connect-multiparty')
+const multiparty = require('multiparty')
 
-const storedChecksumValues = new Set()
-const multipartMiddleware = (
-	multipart({
-		autoFiles: true,
-	})
+const storedChecksumValues = (
+	fs
+	.existsSync(
+		'./.storedChecksumValues.json',
+	)
+	? (
+		new Set(
+			require('./.storedChecksumValues.json')
+		)
+	)
+	: new Set()
 )
 
 express()
@@ -55,18 +61,71 @@ express()
 )
 .post(
 	'/file',
-	multipartMiddleware,
 	(req, res) => {
-		console.log('files', req.files)
+		const form = (
+			new multiparty
+			.Form({
+				uploadDir: './uploads',
+			})
+		)
 
-		res.send('saved')
+		form
+		.parse(
+			req,
+			(error, fields, { files }) => {
+				const [file] = files
 
-		// fnv32
-		// .fnv_1a(
-		// 	req
-		// 	.body
-		// 	.blob
-		// )
+				if (error) {
+					console
+					.error(error)
+
+					res
+					.status(500)
+
+					res
+					.send('Error writing file.')
+				}
+				else {
+					res
+					.send('File successfully uploaded.')
+
+					fs
+					.readFile(
+						file.path,
+						{ encoding: 'utf-8' },
+						(error, content) => {
+							const checksum = (
+								fnv32
+								.fnv_1(content)
+								.toString(16)
+							)
+
+							console.log('Stored checksum:', checksum)
+
+							storedChecksumValues
+							.add(checksum)
+
+							fs
+							.writeFile(
+								'./.storedChecksumValues.json',
+								(
+									JSON
+									.stringify(
+										Array
+										.from(storedChecksumValues)
+									)
+								),
+								{ encoding: 'utf-8' },
+								error => (
+									error
+									&& console.error(error)
+								)
+							)
+						}
+					)
+				}
+			}
+		)
 	}
 )
 .listen(

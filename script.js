@@ -22,17 +22,6 @@ const getUploadedChecksums = checksumValues => (
 )
 
 const dispatchPreviouslyUploadedFiles = fileInfos => uploadedChecksums => {
-	const previouslyUploadedFiles = (
-		uploadedChecksums
-		.map(uploadedChecksum => (
-			fileInfos
-			.find(({ checksumValue }) => (
-				checksumValue === uploadedChecksum
-			))
-			.name
-		))
-	)
-
 	const filesToUpload = (
 		fileInfos
 		.filter(({ checksumValue }) => (
@@ -48,6 +37,21 @@ const dispatchPreviouslyUploadedFiles = fileInfos => uploadedChecksums => {
 		))
 	)
 
+	const previouslyUploadedFiles = (
+		uploadedChecksums
+		.map(uploadedChecksum => (
+			fileInfos
+			.find(({ checksumValue }) => (
+				checksumValue === uploadedChecksum
+			))
+			.file
+			.name
+		))
+		.map(fileName => (
+			`<li>${fileName}</li>`
+		))
+	)
+
 	uploadedChecksums
 	.length > 0
 	&& (
@@ -58,12 +62,7 @@ const dispatchPreviouslyUploadedFiles = fileInfos => uploadedChecksums => {
 				Previously Uploaded Files
 			</h2>
 			<ul>
-				${
-					previouslyUploadedFiles
-					.map(uploadedChecksum => (
-						`<li>${uploadedChecksum}</li>`
-					))
-				}
+				${previouslyUploadedFiles}
 			</ul>
 		`)
 	)
@@ -169,7 +168,8 @@ const getFileInfo = (file, callback) => {
 		}
 	)
 
-	reader.readAsText(file)
+	reader
+	.readAsText(file)
 }
 
 window
@@ -192,8 +192,7 @@ window
 				fileInfos
 				.push(fileInfo)
 
-				fileInfos.length === files.length
-				&& (
+				if (fileInfos.length === files.length) {
 					fileInfos = (
 						Array
 						.from(
@@ -211,8 +210,14 @@ window
 							))
 						))
 					)
-				)
-				&& (
+
+					document
+					.getElementById('number-of-duplicates')
+					.innerHTML = (
+						'Number of duplicate images: '
+						.concat(files.length - fileInfos.length)
+					)
+
 					Promise
 					.resolve(
 						fileInfos
@@ -228,7 +233,7 @@ window
 					)
 					.then(sendFiles)
 					.catch(console.error)
-				)
+				}
 			}
 		)
 	))
