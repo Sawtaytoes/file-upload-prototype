@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Upload Files</title>
+</head>
+<body>
+	<div>
+		<input
+			multiple
+			name="files"
+			onchange="uploadFiles()"
+			type="file"
+		/>
+	</div>
+
+	<div id="previously-uploaded-files"></div>
+	<div id="newly-uploaded-files"></div>
+
+	<script src="./checksum.js"></script>
+	<script src="./script.js"></script>
+</body>
+</html>

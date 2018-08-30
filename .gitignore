@@ -1,0 +1,24 @@
+# Configs
+localConfig.js
+
+# Generated
+.cache
+.eslintcache
+public/bundles
+
+# Logs
+logs
+*.log*
+npm-debug.log*
+
+# Misc
+.DS_Store
+[Tt]humbs.db
+*.dmp
+._*
+
+# npm
+node_modules
+
+# Visual Studio
+.vs
