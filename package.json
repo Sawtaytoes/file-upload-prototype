@@ -12,9 +12,9 @@
   "dependencies": {
     "@ghadyani-framework/eslint-config-base": "^0.0.3",
     "@ghadyani-framework/eslint-config-node": "^0.0.3",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "eslint": "^5.4.0",
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "fnv32": "^0.0.1",
     "multiparty": "^4.2.1"
   }
