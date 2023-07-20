@@ -70,6 +70,76 @@ const dispatchPreviouslyUploadedFiles = fileInfos => uploadedChecksums => {
 	return filesToUpload
 }
 
+const getVideoSizes = files => (
+	Promise
+	.all(
+		Array
+		.from(files)
+		.map(file => ({
+			type: file.type,
+			url: (
+				console.log(file)||
+				URL
+				.createObjectURL(file)
+			),
+		}))
+		.map(({ type, url }) => {
+			const videoElement = (
+				document
+				.createElement('video')
+			)
+
+			videoElement
+			.type = type
+
+			videoElement
+			.src = url
+
+			return videoElement
+		})
+		.map(videoElement => (
+			new Promise(resolve => {
+				const intervalId = (
+					setInterval(() => {
+						if (
+							videoElement
+							.duration
+						) {
+							clearInterval(
+								intervalId
+							)
+
+							resolve(
+								videoElement
+								.duration
+							)
+						}
+					})
+				)
+			})
+		))
+		.reduce(
+			(promises, promise) => (
+				promises
+				.concat(promise)
+			),
+			[],
+		)
+	)
+	.then(videoDurations => (
+		console.log({videoDurations})||
+		videoDurations
+		.map(videoDuration => (
+			videoDuration / 60
+		))
+		.reduce((total, fileSize) => (
+			console.log({total})||
+			console.log({fileSize})||
+			total + fileSize
+		))
+	))
+)
+
 const sendFiles = files => (
 	files
 	.length > 0
@@ -130,9 +200,9 @@ const sendFiles = files => (
 )
 
 const getFileInfo = (file, callback) => {
-	const checksum = (
-		new Checksum('fnv32')
-	)
+	// const checksum = (
+	// 	new Checksum('fnv32')
+	// )
 
 	const reader = new FileReader()
 
@@ -140,29 +210,29 @@ const getFileInfo = (file, callback) => {
 	.addEventListener(
 		'loadend',
 		({ currentTarget }) => {
-			checksum
-			.updateStringly(
-				currentTarget
-				.result
-			)
+			// checksum
+			// .updateStringly(
+			// 	currentTarget
+			// 	.result
+			// )
 
-			const checksumValue = (
-				checksum
-				.result
-				.toString(16)
-			)
+			// const checksumValue = (
+			// 	checksum
+			// 	.result
+			// 	.toString(16)
+			// )
 
-			console.log({
-				checksumValue,
-				name: file.name,
-			})
+			// console.log({
+			// 	checksumValue,
+			// 	name: file.name,
+			// })
 
 			callback({
-				checksumValue,
-				content: (
-					currentTarget
-					.result
-				),
+				// checksumValue,
+				// content: (
+				// 	currentTarget
+				// 	.result
+				// ),
 				file,
 			})
 		}
@@ -193,23 +263,23 @@ window
 				.push(fileInfo)
 
 				if (fileInfos.length === files.length) {
-					fileInfos = (
-						Array
-						.from(
-							new Set(
-								fileInfos
-								.map(({ checksumValue }) => (
-									checksumValue
-								))
-							)
-						)
-						.map(deduplicatedChecksumValue => (
-							fileInfos
-							.find(({ checksumValue }) => (
-								checksumValue === deduplicatedChecksumValue
-							))
-						))
-					)
+					// fileInfos = (
+					// 	Array
+					// 	.from(
+					// 		new Set(
+					// 			fileInfos
+					// 			.map(({ checksumValue }) => (
+					// 				checksumValue
+					// 			))
+					// 		)
+					// 	)
+					// 	.map(deduplicatedChecksumValue => (
+					// 		fileInfos
+					// 		.find(({ checksumValue }) => (
+					// 			checksumValue === deduplicatedChecksumValue
+					// 		))
+					// 	))
+					// )
 
 					document
 					.getElementById('number-of-duplicates')
@@ -220,18 +290,21 @@ window
 
 					Promise
 					.resolve(
-						fileInfos
-						.map(({ checksumValue }) => (
-							checksumValue
-						))
+						files
+						// fileInfos
+						// .map(({ checksumValue }) => (
+						// 	checksumValue
+						// ))
 					)
-					.then(getUploadedChecksums)
-					.then(
-						dispatchPreviouslyUploadedFiles(
-							fileInfos
-						)
-					)
-					.then(sendFiles)
+					// .then(getUploadedChecksums)
+					// .then(
+					// 	dispatchPreviouslyUploadedFiles(
+					// 		fileInfos
+					// 	)
+					// )
+					.then(getVideoSizes)
+					// .then(sendFiles)
+					.then(console.log)
 					.catch(console.error)
 				}
 			}
